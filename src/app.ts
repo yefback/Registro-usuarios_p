@@ -16,10 +16,7 @@ app.use(express.static(staticDir));
 
 app.use("/api/usuarios", userRoutes);
 
-app.get("*", (req, res, next) => {
-  if (req.path.startsWith("/api")) {
-    return next();
-  }
+app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(path.join(staticDir, "index.html"));
 });
 
