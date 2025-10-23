@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 
 import userRoutes from "./routes/user.routes";
 import notFoundHandler from "./middlewares/not-found";
@@ -10,7 +11,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const staticDir = path.resolve(__dirname, "..", "public");
+app.use(express.static(staticDir));
+
 app.use("/api/usuarios", userRoutes);
+
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
+  res.sendFile(path.join(staticDir, "index.html"));
+});
 
 app.use(notFoundHandler);
 app.use(errorHandler);
