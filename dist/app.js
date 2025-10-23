@@ -5,13 +5,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const not_found_1 = __importDefault(require("./middlewares/not-found"));
 const error_handler_1 = __importDefault(require("./middlewares/error-handler"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+const staticDir = path_1.default.resolve(__dirname, "..", "public");
+app.use(express_1.default.static(staticDir));
 app.use("/api/usuarios", user_routes_1.default);
+app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path_1.default.join(staticDir, "index.html"));
+});
 app.use(not_found_1.default);
 app.use(error_handler_1.default);
 exports.default = app;
